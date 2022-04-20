@@ -16,19 +16,25 @@ const checkboxData = [{
     text: "Задача 4. Пробую изменить межстрочный интервал между задачами, но при этом оставить его в пределах одной задачи таким же маленьким. Работает",
   }];
 
-const select = document.getElementById('filter');
-const list = document.getElementById('list');
+  // npm install -g json-server
+  // json-server --watch info.json
 
-function ClearAll() {
-  list.innerHTML = " ";
+const select = document.getElementById('filter')
+const list = document.getElementById('list')
+
+
+function clearAll() {
+  list.innerHTML = " "
 }
 
-select.addEventListener('change', function(){
-  const filter = select.value;
-  const filtered = filtration(checkboxData, filter);
-  ClearAll();
+function create() {
+  const filter = select.value
+  const filtered = filtration(checkboxData, filter)
+  clearAll()
   list.append(createInputsList(filtered))
-})
+}
+
+select.addEventListener('change', create)
 
 function filtration(arr, filter) {
   switch (filter) {
@@ -40,17 +46,14 @@ function filtration(arr, filter) {
         return ready.ready === true;
       });
       
-
     case "not_ready_list":
       return arr.filter(function(ready) {
         return ready.ready === false;
       });
       
-
     default: 
       return arr;
   }
-  
 }
 
 const createInputRow = ({
@@ -58,37 +61,48 @@ const createInputRow = ({
   text,
   ready
 }) => {
-  const wrapper = document.createElement('div');
+  const wrapper = document.createElement('div')
   wrapper.append(createCheckboxEl(id, ready), createLabelEl(id, text))
 
-  return wrapper;
+  return wrapper
 }
 
 const createLabelEl = (id, text) => {
-  const label = document.createElement('label');
-  label.htmlFor = id;
-  label.innerText = text;
-  label.className = "label1";
-
+  const label = document.createElement('label')
+  label.htmlFor = id
+  label.innerText = text
+  label.className = "label1"
+  
   return label
 }
 
+function fn(event) {
+  let id = event.target.id - 1
+  checkboxData[id].ready = !checkboxData[id].ready
+
+  create();
+
+  return
+ }
+
 const createCheckboxEl = (id, ready) => {
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.id = id;
-  checkbox.checked = ready;
-  checkbox.className = "check1";
+  const checkbox = document.createElement('input')
+  checkbox.type = 'checkbox'
+  checkbox.id = id
+  checkbox.checked = ready
+  checkbox.className = "check1"
+
+  checkbox.addEventListener('change', fn)
 
   return checkbox
 }
 
 const createInputsList = (inputsData) => {
-    const wrapper = document.createElement('div');
+    const wrapper = document.createElement('div')
     for (const item of inputsData) {
       wrapper.append(createInputRow(item))
     }
     return wrapper
   }
 
-list.append(createInputsList(checkboxData));
+list.append(createInputsList(checkboxData))
